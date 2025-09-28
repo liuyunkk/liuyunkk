@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>折纸の动漫资源</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #1f1f1f;
+            padding: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            margin-bottom: 20px;
+            padding: 16px;
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .title-section h1 {
+            font-weight: 500;
+            font-size: clamp(1.5rem, 5vw, 1.8rem);
+            margin-bottom: 8px;
+        }
+        
+        .title-section p {
+            color: #5f6368;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+        }
+        
+        .search-container {
+            display: flex;
+            align-items: center;
+            background: #f1f3f4;
+            border-radius: 8px;
+            padding: 8px 16px;
+            width: 300px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-container:focus-within {
+            background: #e6f1fe;
+            box-shadow: 0 0 0 2px #1a73e8;
+        }
+        
+        .search-container input {
+            border: none;
+            background: transparent;
+            margin-left: 8px;
+            width: 100%;
+            outline: none;
+            font-size: 1rem;
+        }
+        
+        .stats-bar {
+            display: flex;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid #f1f3f4;
+            color: #5f6368;
+            font-size: 0.9rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            margin-right: 24px;
+        }
+        
+        .stat-item .material-icons {
+            font-size: 1.1rem;
+            margin-right: 6px;
+        }
+        
+        /* 分类文件夹样式 - 横向滚动卡片 */
+        .categories-scroll {
+            overflow-x: auto;
+            padding: 8px 0;
+            margin-bottom: 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .categories-container {
+            margin-bottom: 20px;
+        }
+        
+        .categories-title {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: #5f6368;
+        }
+        
+.categories-grid {
+    display: flex;
+    gap: 16px;
+    padding: 0 12px; /* 与 apps-grid 对齐 */
+    min-width: 100%; /* 让内容宽度至少和容器一致 */
+    box-sizing: border-box;
+}
+.categories-scroll {
+    overflow-x: auto;
+    margin-bottom: 20px;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 0; /* 移除左右 padding，避免双重边距 */
+}
+        
+        /* 优化的分类卡片样式 */
+        .category-folder {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .category-folder:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .category-folder.active {
+            border: 2px solid #1a73e8;
+        }
+        
+        .folder-icon {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            color: #1a73e8;
+            width: auto;
+            height: auto;
+            border-radius: 0;
+            background-color: transparent;
+        }
+        
+        .folder-info {
+            text-align: center;
+        }
+        
+        .folder-name {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .folder-count {
+            font-size: 0.8rem;
+            color: #5f6368;
+        }
+        
+        /* 应用卡片样式 */
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 0 4px; /* 添加左右内边距确保间距一致 */
+        }
+        
+        .app-card {
+            background-color: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .app-card:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+        }
+        
+        .app-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            width: 100%;
+            gap: 16px;
+        }
+        
+        .app-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 20px;
+            color: white;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        
+        .app-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .app-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .app-name {
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .app-version {
+            color: #5f6368;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+        
+        .app-size {
+            font-weight: 500;
+            color: #1a73e8;
+            font-size: 0.9rem;
+        }
+        
+        .app-description {
+            color: #5f6368;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .app-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #5f6368;
+            font-size: 0.9rem;
+            margin-top: auto;
+            align-items: center;
+        }
+        
+        .category {
+            background: #f1f3f4;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            display: inline-block;
+            width: fit-content;
+        }
+        
+        .download-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .download-btn:hover {
+            background-color: #0d62c9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .download-btn:active {
+            background-color: #0b56b4;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .download-btn .material-icons {
+            font-size: 1.1rem;
+            margin-right: 6px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            grid-column: 1 / -1;
+            color: #5f6368;
+        }
+        
+        .no-results .material-icons {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #dadce0;
+        }
+        
+        /* 不同颜色区分 */
+        .icon-blue { background-color: #1a73e8; }
+        .icon-red { background-color: #ea4335; }
+        .icon-green { background-color: #0f9d58; }
+        .icon-yellow { background-color: #fbbc04; }
+        .icon-purple { background-color: #a142f4; }
+        .icon-pink { background-color: #f538a0; }
+        .icon-teal { background-color: #0097a7; }
+        .icon-orange { background-color: #ff6d00; }
+        .icon-brown { background-color: #6d4c41; }
+        .icon-indigo { background-color: #3f51b5; }
+        
+        /* 响应式设计优化 */
+        @media (max-width: 768px) {
+            .apps-grid {
+                grid-template-columns: repeat(auto-fill, minmax(47%, 1fr)); /* 调整宽度比例 */
+                gap: 16px;
+                padding: 0 8px; /* 增加移动端左右内边距 */
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-container {
+                width: 100%;
+                margin-top: 16px;
+            }
+            
+            .stats-bar {
+                flex-wrap: wrap;
+            }
+            
+            .stat-item {
+                margin-bottom: 8px;
+                margin-right: 16px;
+            }
+            
+            /* 移动端分类卡片调整 */
+            .category-folder {
+                min-width: 100px;
+                padding: 12px;
+            }
+            
+            .folder-icon {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+            
+            .apps-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                padding: 0 8px; /* 确保小屏设备也有左右间距 */
+            }
+            
+            .app-header {
+                flex-direction: row;
+                align-items: center;
+                flex-wrap: nowrap;
+                gap: 12px;
+            }
+            
+            .app-icon {
+                margin-bottom: 0;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .download-btn {
+                margin-top: 0;
+                width: auto;
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .app-name {
+                font-size: 1rem;
+            }
+            
+            .app-version, .app-size {
+                font-size: 0.85rem;
+            }
+            
+            .app-description {
+                font-size: 0.85rem;
+                margin-bottom: 12px;
+            }
+            
+            .categories-title {
+                font-size: 1.1rem;
+                margin-bottom: 8px;
+            }
+            
+            .category-folder {
+                min-width: 85px;
+                padding: 10px;
+            }
+            
+            .folder-name {
+                font-size: 0.85rem;
+            }
+            
+            .folder-count {
+                font-size: 0.75rem;
+            }
+            
+            .stat-item {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="title-section">
+                <h1>折纸の动漫资源</h1>
+                <p>订阅并更新最新的动漫资源</p>
+            </div>
+            <div class="search-container">
+                <span class="material-icons">search</span>
+                <input type="text" id="searchInput" placeholder="搜索应用名称、类别或描述...">
+            </div>
+        </div>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="material-icons">apps</span>
+                <span>8 个应用</span>
+            </div>
+            <div class="stat-item">
+                <span class="material-icons">category</span>
+                <span>4 个类别</span>
+            </div>
+            <div class="stat-item">
+                <span class="material-icons">update</span>
+                <span>最近更新: 2025年9月27日</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 分类卡片区域 - 横向滚动 -->
+    <div class="categories-container">
+        <div class="categories-title">资源分类</div>
+        <div class="categories-scroll">
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- 全部资源 -->
+                <div class="category-folder active" data-category="全部资源">
+                    <span class="material-icons folder-icon">category</span>
+                    <div class="folder-info">
+                        <div class="folder-name">全部资源</div>
+                        <div class="folder-count">8 个应用</div>
+                    </div>
+                </div>
+                
+                <!-- 动漫资源 -->
+                <div class="category-folder" data-category="动漫资源">
+                    <span class="material-icons folder-icon">movie</span>
+                    <div class="folder-info">
+                        <div class="folder-name">动漫资源</div>
+                        <div class="folder-count">4 个应用</div>
+                    </div>
+                </div>
+                
+                <!-- 漫画资源 -->
+                <div class="category-folder" data-category="漫画资源">
+                    <span class="material-icons folder-icon">book</span>
+                    <div class="folder-info">
+                        <div class="folder-name">漫画资源</div>
+                        <div class="folder-count">4 个应用</div>
+                    </div>
+                </div>
+                
+                <!-- 小说资源 -->
+                <div class="category-folder" data-category="小说资源">
+                    <span class="material-icons folder-icon">description</span>
+                    <div class="folder-info">
+                        <div class="folder-name">小说资源</div>
+                        <div class="folder-count">2 个应用</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 应用列表区域 -->
+    <div class="apps-grid" id="appsGrid">
+        <!-- 应用卡片1 - 动漫资源 -->
+        <div class="app-card" data-name="囧次元" data-category="动漫资源" data-description="纯洁无广告版本 纵享追番丝滑">
+            <div class="app-header">
+                <div class="app-icon icon-blue">
+                    <img src="icons/jio.png" alt="囧次元">
+                </div>
+                <div class="app-info">
+                    <div class="app-name">囧次元_无广版</div>
+                    <div class="app-version">版本 1.5.8.0</div>
+                    <div class="app-size">50.24 MB</div>
+                </div>
+                <button class="download-btn" data-link="https://pan.xunlei.com/s/VOa2sIpg2j-RiKGxw7EwAwIRA1?pwd=pfbz">
+                    <span class="material-icons">download</span>
+                    下载
+                </button>
+            </div>
+            <div class="app-description">纯洁无广告版本 纵享追番丝滑</div>
+            <div class="app-meta">
+                <div class="category">动漫资源</div>
+            </div>
+        </div>
+        
+        <!-- 应用卡片2 - 动漫资源 -->
+        <div class="app-card" data-name="动漫共和国" data-category="动漫资源" data-description="纯洁无广告版本 纵享追番丝滑">
+            <div class="app-header">
+                <div class="app-icon icon-blue">
+                    <img src="icons/ghg.png" alt="动漫共和国">
+                </div>
+                <div class="app-info">
+                    <div class="app-name">动漫共和国_无广版</div>
+                    <div class="app-version">版本 1.0.0.7</div>
+                    <div class="app-size">43.82 MB</div>
+                </div>
+                <button class="download-btn" data-link="https://pan.xunlei.com/s/VOa2ruFoKq4RtdompKXQrTGSA1?pwd=zvfr">
+                    <span class="material-icons">download</span>
+                    下载
+                </button>
+            </div>
+            <div class="app-description">纯洁无广告版本 纵享追番丝滑</div>
+            <div class="app-meta">
+                <div class="category">动漫资源</div>
+            </div>
+        </div>
+        
+        <!-- 应用卡片3 - 动漫资源 -->
+        <div class="app-card" data-name="CliCli" data-category="动漫资源" data-description="纯洁无广告版本 纵享追番丝滑">
+            <div class="app-header">
+                <div class="app-icon icon-blue">
+                    <img src="icons/cli.png" alt="CliCli">
+                </div>
+                <div class="app-info">
+                    <div class="app-name">CliCli_无广版</div>
+                    <div class="app-version">版本 1.0.4.8</div>
+                    <div class="app-size">53.96 MB</div>
+                </div>
+                <button class="download-btn" data-link="https://pan.xunlei.com/s/VOa2sCdSBEI3y3FWf4OGitINA1?pwd=9eyn">
+                    <span class="material-icons">download</span>
+                    下载
+                </button>
+            </div>
+            <div class="app-description">纯洁无广告版本 纵享追番丝滑</div>
+            <div class="app-meta">
+                <div class="category">动漫资源</div>
+            </div>
+        </div>
+        
+        <!-- 应用卡片4 - 动漫资源 -->
+        <div class="app-card" data-name="LaQoo" data-category="动漫资源" data-description="多三方源解析 稳定追番">
+            <div class="app-header">
+                <div class="app-icon icon-blue">
+                    <img src="icons/laq.png" alt="LaQoo">
+                </div>
+                <div class="app-info">
+                    <div class="app-name">LaQoo_无广版</div>
+                    <div class="app-version">版本 1.3.4</div>
+                    <div class="app-size">20.86 MB</div>
+                </div>
+                <button class="download-btn" data-link="https://pan.xunlei.com/s/VOa2sP72JbNjML6dcS7esUI3A1?pwd=w84t">
+                    <span class="material-icons">download</span>
+                    下载
+                </button>
+            </div>
+            <div class="app-description">多三方源解析 稳定追番</div>
+            <div class="app-meta">
+                <div class="category">动漫资源</div>
+            </div>
+        </div>
+        
+        <!-- 应用卡片5 - 漫画资源 -->
+        <div class="app-card" data-name="Cimoc" data-category="漫画资源" data-description="纯净净无广告版本 纵享漫画丝滑">
+            <div class="app-header">
+                <div class="app-icon icon-blue">
+                    <img src="icons/moc.png" alt="Cimoc">
+                </div>
+                <div class="app-info">
+                    <div class="app-name">Cimoc_漫画</div>
+                    <div class="app-version">版本 1.7.263</div>
+                    <div class="app-size">57.76 MB</div>
+                </div>
+                <button class="download-btn" data-link="https://pan.xunlei.com/s/VOa2sWE6A6wW0tTShVqmQ_VzA1?pwd=hc2n">
+                    <span class="material-icons">download</span>
+                    下载
+                </button>
+            </div>
+            <div class="app-description">纯净无广告版本 纵享丝滑漫画</div>
+            <div class="app-meta">
+                <div class="category">漫画资源</div>
+            </div>
+        </div>
+        
+        <!-- 应用卡片6 - 漫画资源 -->
+        <div class="app-card" data-name="轻漫岛" data-category="漫画资源" data-description="纯净无广告版本 纵享漫画丝滑">
+            <div class="app-header">
+                <div class="app-icon icon-blue">
+                    <img src="icons/qmd.png" alt="轻漫岛">
+                </div>
+                <div class="app-info">
+                    <div class="app-name">轻漫岛_无广版</div>
+                    <div class="app-version">版本 2.0.0</div>
+                    <div class="app-size">46.40 MB</div>
+                </div>
+                <button class="download-btn" data-link="https://pan.xunlei.com/s/VOa8Crs5IisMuUZHn3QF4o7eA1?pwd=txdq">
+                    <span class="material-icons">download</span>
+                    下载
+                </button>
+            </div>
+            <div class="app-description">纯净无广告版本 纵享丝滑漫画</div>
+            <div class="app-meta">
+                <div class="category">漫画资源</div>
+            </div>
+        </div>
+        
+        <!-- 应用卡片7 - 小说资源 -->
+        <div class="app-card" data-name="七猫免费小说" data-category="小说资源" data-description="纯净无广告版本 纵享小说阅读">
+            <div class="app-header">
+                <div class="app-icon icon-blue">
+                    <img src="icons/qim.png" alt="七猫免费小说">
+                </div>
+                <div class="app-info">
+                    <div class="app-name">七猫免费小说_纯净版</div>
+                    <div class="app-version">版本 7.81</div>
+                    <div class="app-size">192.54 MB</div>
+                </div>
+                <button class="download-btn" data-link="https://pan.xunlei.com/s/VOaAwu937FobphNhKkiGun30A1?pwd=myh3">
+                    <span class="material-icons">download</span>
+                    下载
+                </button>
+            </div>
+            <div class="app-description">纯净无广告版本 纵享小说阅读</div>
+            <div class="app-meta">
+                <div class="category">小说资源</div>
+            </div>
+        </div>
+        
+        <!-- 应用卡片8 - 小说资源 -->
+        <div class="app-card" data-name="得间免费小说" data-category="小说资源" data-description="纯净无广告版本 纵享小说阅读">
+            <div class="app-header">
+                <div class="app-icon icon-blue">
+                    <img src="icons/dej.png" alt="得间免费小说">
+                </div>
+                <div class="app-info">
+                    <div class="app-name">得间免费小说极速版_纯净版</div>
+                    <div class="app-version">版本 5.6.5</div>
+                    <div class="app-size">218.29 MB</div>
+                </div>
+                <button class="download-btn" data-link="https://pan.xunlei.com/s/VOaAxDGBVJOnUl3tmMqpuNt0A1?pwd=vizy">
+                    <span class="material-icons">download</span>
+                    下载
+                </button>
+            </div>
+            <div class="app-description">纯净无广告版本 纵享小说阅读</div>
+            <div class="app-meta">
+                <div class="category">小说资源</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const appsGrid = document.getElementById('appsGrid');
+        const appCards = document.querySelectorAll('.app-card');
+        const categoryFolders = document.querySelectorAll('.category-folder');
+        let currentCategory = '全部资源';
+        
+        // 添加无结果提示元素
+        const noResults = document.createElement('div');
+        noResults.className = 'no-results';
+        noResults.innerHTML = `
+            <span class="material-icons">search_off</span>
+            <h3>未找到匹配的应用</h3>
+            <p>请尝试不同的搜索词或分类</p>
+        `;
+        
+        // 分类切换功能
+        categoryFolders.forEach(folder => {
+            // 桌面端点击事件
+            folder.addEventListener('click', function() {
+                currentCategory = this.getAttribute('data-category');
+                categoryFolders.forEach(f => f.classList.remove('active'));
+                this.classList.add('active');
+                filterApps();
+            });
+
+            // 移动端触摸事件处理
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let isSwiping = false;
+            
+            folder.addEventListener('touchstart', function(e) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                isSwiping = false;
+            }, { passive: true });
+            
+            folder.addEventListener('touchmove', function(e) {
+                if (Math.abs(e.touches[0].clientX - touchStartX) > 10 || 
+                    Math.abs(e.touches[0].clientY - touchStartY) > 10) {
+                    isSwiping = true;
+                }
+            }, { passive: true });
+            
+            folder.addEventListener('touchend', function() {
+                if (!isSwiping) {
+                    currentCategory = this.getAttribute('data-category');
+                    categoryFolders.forEach(f => f.classList.remove('active'));
+                    this.classList.add('active');
+                    filterApps();
+                }
+            }, { passive: true });
+        });
+        
+        // 搜索功能
+        searchInput.addEventListener('input', filterApps);
+        
+        // 应用过滤函数
+        function filterApps() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            let hasVisibleItems = false;
+            
+            appCards.forEach(card => {
+                const appName = card.getAttribute('data-name').toLowerCase();
+                const appCategory = card.getAttribute('data-category');
+                const appDescription = card.getAttribute('data-description').toLowerCase();
+                
+                const categoryMatch = currentCategory === '全部资源' || appCategory === currentCategory;
+                const searchMatch = searchTerm === '' || 
+                                    appName.includes(searchTerm) || 
+                                    appCategory.toLowerCase().includes(searchTerm) || 
+                                    appDescription.includes(searchTerm);
+                
+                if (categoryMatch && searchMatch) {
+                    card.style.display = 'flex';
+                    hasVisibleItems = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // 显示或隐藏无结果提示
+            if (!hasVisibleItems) {
+                if (!document.querySelector('.no-results')) {
+                    appsGrid.appendChild(noResults);
+                }
+            } else {
+                if (document.querySelector('.no-results')) {
+                    appsGrid.removeChild(noResults);
+                }
+            }
+        }
+        
+        // 应用卡片点击效果
+        document.querySelectorAll('.app-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+                setTimeout(() => {
+                    this.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.1)';
+                }, 150);
+            });
+        });
+        
+        // 下载按钮功能
+        document.querySelectorAll('.download-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const downloadLink = this.getAttribute('data-link');
+                
+                const originalHtml = this.innerHTML;
+                this.innerHTML = '<span class="material-icons">downloading</span> 下载中...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    if (downloadLink) {
+                        window.open(downloadLink, '_blank');
+                    }
+                    this.innerHTML = originalHtml;
+                    this.disabled = false;
+                }, 800);
+            }, { passive: false });
+            
+            btn.addEventListener('touchstart', function(e) {
+                e.stopPropagation();
+            }, { passive: false });
+        });
+    </script>
+</body>
+</html>
+
