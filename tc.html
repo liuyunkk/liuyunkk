@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>AutSheng 5.2.0</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: "Microsoft YaHei", sans-serif;
+      background-color: #f2f2f2;
+    }
+    .dialog {
+      width: 100vw;
+      height: 100vh;
+      background: white;
+      display: flex;
+      flex-direction: column;
+    }
+    .dialog img {
+      width: 100%;
+      display: block;
+    }
+    .dialog-content {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .date {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+    .normal {
+      margin: 6px 0;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .highlight {
+      color: #e91e63;
+      font-weight: bold;
+    }
+    .blue {
+      color: #1a73e8;
+      font-weight: bold;
+    }
+    .warning {
+      color: red;
+      font-weight: bold;
+      margin-top: 12px;
+    }
+    .small {
+      font-size: 14px;
+      color: #444;
+    }
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 0 16px 16px;
+    }
+    .btn {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 22px;
+      background-color: white;
+      font-size: 16px;
+      cursor: pointer;
+      text-align: center;
+      transition: background-color 0.2s;
+    }
+    .btn:hover {
+      background-color: #f0f0f0;
+    }
+  </style>
+  <script>
+    function Call_Dismiss() {
+      Epic.dismiss();
+    }
+    function Call_Cancel_Event() {
+        Epic.cancel_event();
+    }
+
+    //调用额外事件
+    function Call_Extra_Event() {
+        Epic.extra_event();
+    }
+  </script>
+</head>
+<body>
+  <div class="dialog">
+    <img src="https://1.t60.top/bg2.png" alt="AutSheng banner">
+    <div class="dialog-content">
+      <div class="title">欢迎来到本软件</div>
+      <div class="date">获取更多动漫资源 请加入QQ群</div>
+      <div class="normal">海量破解纯净高清动漫软件</div>
+      <div class="normal highlight">如需要投稿软件请联系群管理</div>
+    </div>
+    <div class="button-container">
+      <!-- 原“官方网站”按钮：文字改为“确定”，添加onclick事件 -->
+      <div class="btn" onclick="Call_Dismiss()">确定</div>
+      <!-- 原“插件投票”按钮：文字改为“进入q群”，添加onclick事件 -->
+      <div class="btn" onclick="Call_Extra_Event()">进入q群</div>
+      <!-- 新增“取消”按钮，添加onclick事件 -->
+      <div class="btn" onclick="Call_Cancel_Event">取消</div>
+    </div>
+  </div>
+</body>
+</html>
