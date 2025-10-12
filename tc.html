@@ -119,6 +119,7 @@
       <p>最稳定的APP云验证系统</p>
     </div>
     <button class="btn" onclick="Call_Dismiss()">进入软件</button>
+    <button class="btn" onclick="Call_Extra_Event()">添加q群</button>
     <div class="character"></div>
   </div>
 <script>
@@ -136,6 +137,15 @@
     function Call_Dismiss() {
         Epic.dismiss();
     }
+    function Call_Cancel_Event() {
+        Epic.cancel_event();
+    }
+
+    //调用额外事件
+    function Call_Extra_Event() {
+        Epic.extra_event();
+    }
+
 
     function mStart(n) {
         n.style.backgroundColor = "#075aa3"
