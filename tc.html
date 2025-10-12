@@ -1,118 +1,159 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <title>AutSheng 5.2.0</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>实时卡片弹窗</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    /* Reset & Base */
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
     }
     html, body {
-      height: 100%;
-      font-family: "Microsoft YaHei", sans-serif;
-      background-color: #f2f2f2;
-    }
-    .dialog {
-      width: 100vw;
-      height: 100vh;
-      background: white;
-      display: flex;
-      flex-direction: column;
-    }
-    .dialog img {
-      width: 100%;
-      display: block;
-    }
-    .dialog-content {
-      flex: 1;
-      padding: 16px;
-      overflow-y: auto;
-    }
-    .title {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-    .date {
-      font-size: 13px;
-      color: #666;
-      margin-bottom: 10px;
-    }
-    .normal {
-      margin: 6px 0;
-      font-size: 15px;
-      line-height: 1.6;
-    }
-    .highlight {
-      color: #e91e63;
-      font-weight: bold;
-    }
-    .blue {
-      color: #1a73e8;
-      font-weight: bold;
-    }
-    .warning {
-      color: red;
-      font-weight: bold;
-      margin-top: 12px;
-    }
-    .small {
-      font-size: 14px;
-      color: #444;
-    }
-    .button-container {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding: 0 16px 16px;
-    }
-    .btn {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 22px;
-      background-color: white;
-      font-size: 16px;
-      cursor: pointer;
-      text-align: center;
-      transition: background-color 0.2s;
-    }
-    .btn:hover {
-      background-color: #f0f0f0;
-    }
-  </style>
-  <script>
-    function Call_Dismiss() {
-      Epic.dismiss();
-    }
-    function Call_Cancel_Event() {
-        Epic.cancel_event();
+      width: 100%; height: 100%;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      overflow: hidden;
     }
 
-    //调用额外事件
-    function Call_Extra_Event() {
-        Epic.extra_event();
+    /* 满屏卡片 */
+    .content-box {
+      position: relative;
+      width: 100%; 
+      height: 100%;
+      background: linear-gradient(135deg, #f0f4ff, #d9e6ff);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 1rem 1rem 2rem;
+      animation: fadeIn 0.6s ease-out;
     }
-  </script>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 时间 & 日期 */
+    .time {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-top: 4vh;
+      margin-bottom: .25rem;
+    }
+    .date {
+      font-size: 1rem;
+      color: #4a4a4a;
+      margin-bottom: 1.5rem;
+    }
+
+    /* 标题 & 文案 */
+    .title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #333333;
+      margin-bottom: 1rem;
+    }
+    .announcement {
+      width: 100%;
+      text-align: center;      /* 文案居中 */
+      margin-bottom: 1rem;
+    }
+    .announcement p {
+      font-size: .95rem;
+      color: #2e2e2e;
+      line-height: 1.4;
+      margin-bottom: .5rem;
+    }
+
+    /* 按钮 */
+    .btn {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: .6rem 1.2rem;
+      font-size: .95rem;
+      font-weight: 500;
+      color: #fff;
+      background: linear-gradient(90deg, #4b6cb7, #182848);
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    /* 左下角女孩图 */
+    .character {
+      position: absolute;
+      bottom: 20px;    /* 上移到 20px */
+      left: 10px;
+      width: 80px;
+      height: 80px;
+      background: url('https://1.t60.top/girl.png') no-repeat center/contain;
+      opacity: .9;
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-6px); }
+    }
+
+    /* 小屏幕兼容 */
+    @media (max-height: 500px) {
+      .content-box { overflow-y: auto; }
+    }
+  </style>
 </head>
 <body>
-  <div class="dialog">
-    <img src="https://1.t60.top/bg2.png" alt="AutSheng banner">
-    <div class="dialog-content">
-      <div class="title">欢迎来到本软件</div>
-      <div class="date">获取更多动漫资源 请加入QQ群</div>
-      <div class="normal">海量破解纯净高清动漫软件</div>
-      <div class="normal highlight">如需要投稿软件请联系群管理</div>
+
+  <div class="content-box">
+    <div class="time" id="time">00:00:00</div>
+    <div class="date" id="date">加载中...</div>
+    <div id="title" class="title">摇光云</div>
+    <div id="msg" class="announcement">
+      <p>功能最强大</p>
+      <p>最稳定的APP云验证系统</p>
     </div>
-    <div class="button-container">
-      <!-- 原“官方网站”按钮：文字改为“确定”，添加onclick事件 -->
-      <div class="btn" onclick="Call_Dismiss()">确定</div>
-      <!-- 原“插件投票”按钮：文字改为“进入q群”，添加onclick事件 -->
-      <div class="btn" onclick="Call_Extra_Event()">进入q群</div>
-      <!-- 新增“取消”按钮，添加onclick事件 -->
-      <div class="btn" onclick="Call_Cancel_Event">取消</div>
-    </div>
+    <button class="btn" onclick="Call_Dismiss()">进入软件</button>
+    <div class="character"></div>
   </div>
+<script>
+    //标题
+    function Call_GetTitle(){
+        return Epic.getTitle();
+    }
+        function Call_GetMsg() {
+            let msg = Epic.getMsg();
+            return msg ? msg.replace(/\n/g, '<br>') : '没有公告内容';
+        }
+        
+
+    //调用关闭
+    function Call_Dismiss() {
+        Epic.dismiss();
+    }
+
+    function mStart(n) {
+        n.style.backgroundColor = "#075aa3"
+    }
+    document.getElementById("title").innerHTML = Call_GetTitle();
+    document.getElementById("msg").innerHTML = Call_GetMsg();
+</script>
+  <script>
+    function updateTime() {
+      const now = new Date();
+      document.getElementById('time').textContent =
+        `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+      document.getElementById('date').textContent =
+        now.toLocaleDateString('zh-CN',{ month:'long', day:'numeric', weekday:'long' });
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+  </script>
+  <script src="https://api.vvhan.com/api/script/bolang"></script>
 </body>
 </html>
