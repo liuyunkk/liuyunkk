@@ -1,0 +1,14 @@
+  {
+    "smater_mode":"Epic.AppDialog.a",
+    "class":"LEpic/AppDialog/Cartoon;",
+    "method":"showDialog",
+    "collection":"Landroid/app/Activity;",
+    "type":"V",
+    "plugin_detail":{
+        "name":"toast提示消息",
+        "introduction":"普通提示"
+    },
+    "axml_permissions":[
+        "android.permission.INTERNET"
+    ]
+}
