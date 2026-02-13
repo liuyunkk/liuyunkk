@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分享解锁 - 软件访问</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 基本样式 */
+        body {
+            font-family: "Microsoft YaHei", "微软雅黑", "SimHei", "黑体", sans-serif;
+            line-height: 1.6;
+            color: #fff;
+            background-color: transparent;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 添加模糊背景 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://pic1.imgdb.cn/item/698f21f1e887663d376fd85c.jpg') no-repeat center center;
+            background-size: cover;
+            filter: brightness(0.5);
+            -webkit-filter: brightness(0.5);
+            z-index: -1;
+        }
+
+        @media (max-width: 500px) {
+            body::before {
+                background-position: center top;
+            }
+        }
+
+        /* 主容器 */
+        .container {
+            width: 100%;
+            max-width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            max-width: 380px;
+            margin: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* 系统标识 */
+        .system-identity {
+            display: flex;
+            align-items: center;
+            margin: 20px 0 30px;
+            text-align: center;
+            padding: 0 20px;
+            width: 100%;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+
+        .system-logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #0062ff, #00b3ff);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            box-shadow: 0 5px 15px rgba(0, 132, 255, 0.3);
+        }
+
+        .system-logo i {
+            font-size: 30px;
+            color: white;
+        }
+
+        .system-info h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        /* 分享面板 */
+        .share-panel {
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        /* 分享进度 */
+        .share-progress {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .progress-title {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-text {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        .progress-count {
+            font-size: 28px;
+            color: #00a8ff;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        /* 分享按钮组 */
+        .share-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .share-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .share-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .share-btn i {
+            font-size: 24px;
+            color: #fff;
+            margin-right: 10px;
+        }
+
+        .share-btn span {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Toast提示样式 */
+        #share-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        #share-toast.show {
+            opacity: 1;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 500px) {
+            .container {
+                margin: 15px;
+                padding: 15px;
+            }
+            
+            .system-logo {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .system-info h1 {
+                font-size: 24px;
+            }
+
+            .share-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 系统标识 -->
+        <div class="system-identity">
+            <div class="system-logo">
+                <i class="fas fa-share-alt"></i>
+            </div>
+            <div class="system-info">
+                <h1>分享解锁</h1>
+            </div>
+        </div>
+        
+        <!-- 分享面板 -->
+        <div class="share-panel">
+            <!-- 分享进度 -->
+            <div class="share-progress">
+                <div class="progress-title">
+                    <span class="progress-text">剩余分享次数</span>
+                    <span class="progress-count">3</span>
+                </div>
+            </div>
+            
+            <!-- 分享按钮组 -->
+            <div class="share-buttons">
+                <div class="share-btn" onclick="Call_Extra_Event()">
+                    <i class="fab fa-weixin"></i>
+                    <span>微信分享</span>
+                </div>
+                <div class="share-btn" onclick="Call_Cancel_Event()">
+                    <i class="fab fa-qq"></i>
+                    <span>QQ分享</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 分享计数
+        let shareCount = 0;
+        let totalShares = 0;  // 总分享次数，包括首次分享
+        const requiredShares = 3;
+        const minimumShareTime = 2000; // 最小分享时间（毫秒）
+        let shareStartTime = 0; // 记录分享开始时间
+        let isSharing = false; // 是否正在分享中
+        
+        // 更新进度显示函数
+        function updateProgress() {
+            const progressCount = document.querySelector('.progress-count');
+            const remainingShares = Math.max(requiredShares - shareCount, 0); // 确保不会显示负数
+            progressCount.textContent = remainingShares;
+        }
+        
+        // 处理分享事件
+        function handleShare(isExtra) {
+            if (!isSharing) return; // 如果不是从分享返回，直接返回
+            
+            const shareTime = Date.now() - shareStartTime;
+            isSharing = false; // 重置分享状态
+            
+            // 检查分享时间是否满足要求
+            if (shareTime < minimumShareTime) {
+                showToast('分享时间太短，请重新分享');
+                return;
+            }
+            
+            totalShares++;
+            
+            // 首次分享不计入总数
+            if (totalShares > 1) {
+                if (shareCount < requiredShares) { // 只有在未达到要求次数时才增加计数
+                    shareCount++;
+                    updateProgress();
+                    showToast('分享成功！');
+                    
+                    // 检查是否完成分享
+                    if (shareCount >= requiredShares) {
+                        setTimeout(() => {
+                            Call_Dismiss();
+                        }, 1000);
+                    }
+                } else {
+                    showToast('已达到分享次数要求');
+                    setTimeout(() => {
+                        Call_Dismiss();
+                    }, 1000);
+                }
+            } else {
+                  showToast('首次分享不计入总数');
+            }
+        }
+        
+        // 监听页面可见性变化
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible' && isSharing) {
+                handleShare();
+            }
+        });
+        
+        // 显示提示信息
+        function showToast(message) {
+            let toast = document.getElementById('share-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'share-toast';
+                document.body.appendChild(toast);
+            }
+            
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // 检查是否完成分享
+        function checkShareComplete() {
+            if (shareCount >= requiredShares) {
+                Call_Dismiss();
+            } else {
+                const remaining = requiredShares - shareCount;
+                showToast(`还需要分享 ${remaining} 次`);
+            }
+        }
+        
+        // 复制文本到剪贴板
+        function copyToClipboard(text) {
+            // 创建临时textarea元素
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+               
+                return true;
+            } catch (err) {
+              
+                return false;
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
+
+        // 获取分享内容
+        function getShareContent() {
+            let title = '';
+            let content = '';
+            
+            try {
+                title = Call_GetTitle() || '分享解锁';
+                content = Call_GetMsg() || '请查看这个内容';
+            } catch (err) {
+                title = '分享解锁';
+                content = '请查看这个内容';
+            }
+            
+            return `${title}\n${content}`;
+        }
+
+        // 跳转到QQ
+        function openQQ() {
+            // 移动端QQ分享链接
+            const mobileQQ = 'mqq://';
+            // PC端QQ链接
+            const pcQQ = 'tencent://message/?Menu=yes';
+            
+            if (/mobile|android|iphone|ipad|phone/i.test(navigator.userAgent)) {
+                window.location.href = mobileQQ;
+            } else {
+                window.location.href = pcQQ;
+            }
+        }
+
+        // 跳转到微信
+        function openWeChat() {
+            // 移动端微信链接
+            const mobileWeChat = 'weixin://';
+            // PC端微信链接
+            const pcWeChat = 'wechat://';
+            
+            if (/mobile|android|iphone|ipad|phone/i.test(navigator.userAgent)) {
+                window.location.href = mobileWeChat;
+            } else {
+                window.location.href = pcWeChat;
+            }
+        }
+        
+        // 分享到微信
+        function Call_Extra_Event() {
+            const shareContent = getShareContent();
+            if (copyToClipboard(shareContent)) {
+                shareStartTime = Date.now(); // 记录开始时间
+                isSharing = true; // 设置分享状态
+                
+                setTimeout(() => {
+                    openWeChat();
+                    if (typeof Epic !== 'undefined' && Epic.extra_event) {
+                        Epic.extra_event();
+                    }
+                }, 300);
+            }
+        }
+        
+        // 分享到QQ
+        function Call_Cancel_Event() {
+            const shareContent = getShareContent();
+            if (copyToClipboard(shareContent)) {
+                shareStartTime = Date.now(); // 记录开始时间
+                isSharing = true; // 设置分享状态
+                
+                setTimeout(() => {
+                    openQQ();
+                    if (typeof Epic !== 'undefined' && Epic.cancel_event) {
+                        Epic.cancel_event();
+                    }
+                }, 300);
+            }
+        }
+        
+        // 标题
+        function Call_GetTitle() {
+            return Epic.getTitle();
+        }
+        
+        // 内容
+        function Call_GetMsg() {
+            return Epic.getMsg();
+        }
+        
+        // 卡密验证
+        function Call_Verify(data) {
+            Epic.verify(data);
+        }
+        
+        // 调用关闭
+        function Call_Dismiss() {
+            Epic.dismiss();
+        }
+        
+        function mStart(n) {
+            n.style.backgroundColor = "#075aa3"
+        }
+        
+        function mUp(n) {
+            n.style.backgroundColor = "#fff"
+        }
+        
+        function tStart(n) {
+            n.style.color = "#075db3";
+            n.style.textDecoration = "underline";
+        }
+        
+        function tUp(n) {
+            n.style.color = "#a0a4a7";
+            n.style.textDecoration = "none";
+        }
+        
+        // 初始化标题和消息
+        if (document.getElementById("title")) {
+            document.getElementById("title").innerHTML = Call_GetTitle();
+        }
+        if (document.getElementById("msg")) {
+            document.getElementById("msg").innerHTML = Call_GetMsg();
+        }
+    </script>
+</body>
+</html> 
