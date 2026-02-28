@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QQ年付超级会员 - 发卡网</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --md-primary: #6750A4;
+    --md-on-primary: #FFFFFF;
+    --md-primary-container: #EADDFF;
+    --md-on-primary-container: #21005D;
+    --md-secondary: #625B71;
+    --md-secondary-container: #E8DEF8;
+    --md-surface: #FFFBFE;
+    --md-surface-variant: #E7E0EC;
+    --md-on-surface: #1C1B1F;
+    --md-on-surface-variant: #49454F;
+    --md-outline: #79747E;
+    --md-shadow: rgba(0,0,0,0.15);
+    --md-error: #B3261E;
+    --radius-xl: 28px;
+    --radius-l: 16px;
+    --radius-m: 12px;
+    --radius-s: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', sans-serif;
+    background: #F6F0FF;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Top App Bar */
+  .app-bar {
+    width: 100%;
+    background: var(--md-surface);
+    box-shadow: 0 1px 3px var(--md-shadow);
+    padding: 0 16px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .app-bar-icon {
+    width: 40px; height: 40px;
+    background: var(--md-primary-container);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .app-bar-title {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--md-on-surface);
+    letter-spacing: -0.3px;
+  }
+
+  .page-content {
+    width: 100%;
+    max-width: 480px;
+    padding: 24px 16px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Hero Card */
+  .hero-card {
+    background: linear-gradient(135deg, #6750A4 0%, #9A82DB 100%);
+    border-radius: var(--radius-xl);
+    padding: 28px 24px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(103,80,164,0.35);
+  }
+  .hero-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 160px; height: 160px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .hero-card::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; left: -20px;
+    width: 120px; height: 120px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+  .vip-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+  .vip-icon {
+    font-size: 16px;
+  }
+  .hero-title {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .hero-subtitle {
+    font-size: 13px;
+    opacity: 0.85;
+    margin-bottom: 20px;
+  }
+  .price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .price-currency {
+    font-size: 18px;
+    font-weight: 600;
+    opacity: 0.9;
+  }
+  .price-main {
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .price-period {
+    font-size: 14px;
+    opacity: 0.8;
+  }
+  .price-original {
+    font-size: 13px;
+    opacity: 0.65;
+    text-decoration: line-through;
+    margin-left: 8px;
+  }
+
+  /* Product image placeholder */
+  .product-image-area {
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 80px; height: 80px;
+    background: rgba(255,255,255,0.15);
+    border-radius: var(--radius-m);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    border: 2px dashed rgba(255,255,255,0.3);
+  }
+  .img-hint {
+    position: absolute;
+    right: 20px;
+    bottom: 12px;
+    font-size: 10px;
+    opacity: 0.5;
+  }
+
+  /* Benefits */
+  .section-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--md-secondary);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 0 4px;
+  }
+  .benefits-card {
+    background: var(--md-surface);
+    border-radius: var(--radius-xl);
+    padding: 20px 20px 12px;
+    box-shadow: 0 1px 4px var(--md-shadow);
+  }
+  .benefits-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--md-on-surface);
+    margin-bottom: 16px;
+  }
+  .benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--md-surface-variant);
+  }
+  .benefit-item:last-child { border-bottom: none; }
+  .benefit-icon-wrap {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--md-primary-container);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .benefit-text { flex: 1; }
+  .benefit-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--md-on-surface);
+  }
+  .benefit-desc {
+    font-size: 12px;
+    color: var(--md-on-surface-variant);
+    margin-top: 1px;
+  }
+
+  /* Order form */
+  .form-card {
+    background: var(--md-surface);
+    border-radius: var(--radius-xl);
+    padding: 24px 20px;
+    box-shadow: 0 1px 4px var(--md-shadow);
+  }
+  .form-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--md-on-surface);
+    margin-bottom: 20px;
+  }
+  .text-field {
+    position: relative;
+    margin-bottom: 24px;
+  }
+  .text-field input {
+    width: 100%;
+    padding: 16px 16px 8px;
+    border: 1.5px solid var(--md-outline);
+    border-radius: var(--radius-m);
+    font-size: 16px;
+    font-family: 'Noto Sans SC', sans-serif;
+    color: var(--md-on-surface);
+    background: transparent;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .text-field input:focus {
+    border-color: var(--md-primary);
+  }
+  .text-field label {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: var(--md-on-surface-variant);
+    pointer-events: none;
+    transition: all 0.2s;
+    background: var(--md-surface);
+    padding: 0 4px;
+  }
+  .text-field input:focus ~ label,
+  .text-field input:not(:placeholder-shown) ~ label {
+    top: 0;
+    font-size: 12px;
+    color: var(--md-primary);
+  }
+  .text-field input::placeholder { color: transparent; }
+
+  /* Notice chip */
+  .notice-chip {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--md-primary-container);
+    border-radius: var(--radius-m);
+    padding: 12px 14px;
+    margin-bottom: 20px;
+  }
+  .notice-chip span:first-child { font-size: 16px; flex-shrink: 0; }
+  .notice-chip p {
+    font-size: 13px;
+    color: var(--md-on-primary-container);
+    line-height: 1.5;
+  }
+
+  /* Buy button */
+  .btn-buy {
+    width: 100%;
+    height: 56px;
+    background: var(--md-primary);
+    color: var(--md-on-primary);
+    border: none;
+    border-radius: var(--radius-l);
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Noto Sans SC', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(103,80,164,0.4);
+    transition: box-shadow 0.2s, transform 0.1s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-buy:hover {
+    box-shadow: 0 4px 16px rgba(103,80,164,0.5);
+    transform: translateY(-1px);
+  }
+  .btn-buy:active { transform: translateY(0); }
+  .btn-buy::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0);
+    transition: background 0.2s;
+  }
+  .btn-buy:hover::after { background: rgba(255,255,255,0.06); }
+
+  /* Footer */
+  .footer-text {
+    text-align: center;
+    font-size: 12px;
+    color: var(--md-on-surface-variant);
+    padding: 0 16px;
+  }
+
+  /* Error */
+  .input-error {
+    font-size: 12px;
+    color: var(--md-error);
+    margin-top: -18px;
+    margin-bottom: 12px;
+    padding: 0 4px;
+    display: none;
+  }
+  .input-error.show { display: block; }
+  .text-field input.error { border-color: var(--md-error); }
+  .text-field input.error ~ label { color: var(--md-error); }
+</style>
+</head>
+<body>
+
+<div class="app-bar">
+  <div class="app-bar-icon">🏪</div>
+  <div class="app-bar-title">发卡商城</div>
+</div>
+
+<div class="page-content">
+
+  <!-- Hero Card -->
+  <div class="hero-card">
+    <div class="vip-badge">
+      <span class="vip-icon">⭐</span>
+      限时特惠
+    </div>
+    <div class="hero-title">QQ年付<br>超级会员</div>
+    <div class="hero-subtitle">正版授权 · 自动发货 · 安全可靠</div>
+    <div class="price-row">
+      <span class="price-currency">¥</span>
+      <span class="price-main">58</span>
+      <span class="price-period">/年</span>
+      <span class="price-original">¥258</span>
+    </div>
+    <img class="product-image-area" src="https://i.ibb.co/ycLJykcZ/b2eda1223623e5d4394da7b1ddde6332.png" alt="产品图片">
+      
+  </div>
+
+  <!-- Benefits -->
+  <div class="section-label">会员权益</div>
+  <div class="benefits-card">
+    <div class="benefit-item">
+      <div class="benefit-icon-wrap">🚀</div>
+      <div class="benefit-text">
+        <div class="benefit-name">超级加速</div>
+        <div class="benefit-desc">下载速度提升至 20MB/s</div>
+      </div>
+    </div>
+    <div class="benefit-item">
+      <div class="benefit-icon-wrap">🎬</div>
+      <div class="benefit-text">
+        <div class="benefit-name">4K 超清画质</div>
+        <div class="benefit-desc">视频通话最高 4K 超清</div>
+      </div>
+    </div>
+    <div class="benefit-item">
+      <div class="benefit-icon-wrap">💾</div>
+      <div class="benefit-text">
+        <div class="benefit-name">超大网盘</div>
+        <div class="benefit-desc">QQ 文件空间扩展至 1TB</div>
+      </div>
+    </div>
+    <div class="benefit-item">
+      <div class="benefit-icon-wrap">🎁</div>
+      <div class="benefit-text">
+        <div class="benefit-name">专属特权</div>
+        <div class="benefit-desc">靓号、主题、超级名片等更多专属权益</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Form -->
+  <div class="section-label">填写信息</div>
+  <div class="form-card">
+    <div class="form-title">📋 提交订单</div>
+
+    <div class="text-field">
+      <input type="text" id="qq-input" placeholder="请输入您的QQ号" maxlength="15">
+      <label for="qq-input">请输入您的QQ号</label>
+    </div>
+    <div class="input-error" id="qq-error">请输入有效的QQ号（5-15位数字）</div>
+
+    <div class="notice-chip">
+      <span>⚠️</span>
+      <p>请确保QQ号准确无误，付款后将直接充值至该账号，<strong>无法退款</strong>，请仔细核对。</p>
+    </div>
+
+    <button class="btn-buy" onclick="handleBuy()">
+      <span>⚡</span>
+      立即购买 · ¥58
+    </button>
+  </div>
+
+  <div class="footer-text">© 2025 发卡商城 · 自动发货系统 · 全天候服务</div>
+</div>
+
+<script>
+function handleBuy() {
+  const input = document.getElementById('qq-input');
+  const error = document.getElementById('qq-error');
+  const val = input.value.trim();
+
+  if (!/^\d{5,15}$/.test(val)) {
+    input.classList.add('error');
+    error.classList.add('show');
+    input.focus();
+    return;
+  }
+  input.classList.remove('error');
+  error.classList.remove('show');
+
+  // Pass QQ to payment page
+  sessionStorage.setItem('orderQQ', val);
+  window.location.href = 'pay.html';
+}
+
+document.getElementById('qq-input').addEventListener('input', function() {
+  this.classList.remove('error');
+  document.getElementById('qq-error').classList.remove('show');
+});
+</script>
+</body>
+</html>
